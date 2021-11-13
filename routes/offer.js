@@ -120,14 +120,13 @@ router.get("/offers", async (req, res) => {
   //   }
   // }
 
-  // let sort = {};
+  let sort = {};
 
-  // if (req.query.sort === "price-desc") {
-  //   sort = { product_price: -1 };
-  // } else if (req.query.sort === "price-asc") {
-  //   sort = { product_price: 1 };
-  // }
-  const sort = req.query.sort.replace("price-", "");
+  if (req.query.sort === "price-desc") {
+    sort = { product_price: -1 };
+  } else if (req.query.sort === "price-asc") {
+    sort = { product_price: 1 };
+  }
 
   let page = 1;
   // if (Number(req.query.page) < 1) {
