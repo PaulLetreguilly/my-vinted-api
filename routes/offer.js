@@ -119,12 +119,16 @@ router.get("/offers", async (req, res) => {
   //     res.json(result);
   //   }
   // }
-  let sort = {};
 
-  if (req.query.sort === "price-desc") {
-    sort = { product_price: -1 };
-  } else if (req.query.sort === "price-asc") {
-    sort = { product_price: 1 };
+  // let sort = {};
+
+  // if (req.query.sort === "price-desc") {
+  //   sort = { product_price: -1 };
+  // } else if (req.query.sort === "price-asc") {
+  //   sort = { product_price: 1 };
+  // }
+  if (req.query.sort) {
+    const sort = req.query.sort.replace("price-", "");
   }
 
   let page;
@@ -136,7 +140,7 @@ router.get("/offers", async (req, res) => {
 
   let limit = Number(req.query.limit);
 
-  const offers = await Offer.find(filters)
+  const offers = await Offer.find(filtre)
     .populate({
       path: "owner",
       select: "account",
@@ -146,7 +150,7 @@ router.get("/offers", async (req, res) => {
     .limit(limit); // renvoyer y résultats
 
   // cette ligne va nous retourner le nombre d'annonces trouvées en fonction des filtres
-  const count = await Offer.countDocuments(filters);
+  const count = await Offer.countDocuments(filtre);
 
   res.json({
     count: count,
