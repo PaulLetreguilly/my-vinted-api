@@ -127,24 +127,29 @@ router.get("/offers", async (req, res) => {
   // } else if (req.query.sort === "price-asc") {
   //   sort = { product_price: 1 };
   // }
+  let sort = "";
   if (req.query.sort) {
-    const sort = req.query.sort.replace("price-", "");
+    sort = req.query.sort.replace("price-", "");
   }
 
-  let page;
-  if (Number(req.query.page) < 1) {
-    page = 1;
-  } else {
+  let page = 1;
+  // if (Number(req.query.page) < 1) {
+  //   page = 1;
+  // } else {
+  //   page = Number(req.query.page);
+  // }
+  if (Number(req.query.page) > 0) {
     page = Number(req.query.page);
   }
 
-  let limit = Number(req.query.limit);
+  // let limit = Number(req.query.limit);
+  let limit = 2;
+  if (req.query.limit) {
+    limit = Number(req.query.limit);
+  }
 
   const offers = await Offer.find(filtre)
-    .populate({
-      path: "owner",
-      select: "account",
-    })
+    .populate("owner.account")
     .sort(sort)
     .skip((page - 1) * limit) // ignorer les x résultats
     .limit(limit); // renvoyer y résultats
