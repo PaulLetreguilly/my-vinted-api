@@ -67,7 +67,7 @@ router.get("/offers", async (req, res) => {
     if (req.query.sort) {
       const sort = req.query.sort.replace("price-", "");
       const offer = await Offer.find(filtre)
-        .select("product_name product_price")
+        // .select("product_name product_price")
         .sort({ product_price: sort })
         .limit(7)
         .skip(pageskip);
@@ -78,7 +78,7 @@ router.get("/offers", async (req, res) => {
         product_name: new RegExp(req.query.title, "i"),
         product_price: { $lte: req.query.priceMax, $gte: req.query.priceMin },
       })
-        .select("product_name product_price")
+        // .select("product_name product_price")
         .limit(2)
         .skip(pageskip);
       const result = { count: offer.length, offers: offer };
@@ -89,15 +89,16 @@ router.get("/offers", async (req, res) => {
       // console.log(req.query.priceMin);
       const sort = req.query.sort.replace("price-", "");
       const offer = await Offer.find(filtre)
-        .select("product_name product_price")
+        // .select("product_name product_price")
         .sort({ product_price: sort });
       const result = { count: offer.length, offers: offer };
       res.json(result);
     } else {
       // console.log(req.query.priceMin);
-      const offer = await Offer.find(filtre).select(
-        "product_name product_price"
-      );
+      const offer = await Offer.find(filtre);
+      // .select(
+      //   "product_name product_price"
+      // );
 
       const result = { count: offer.length, offers: offer };
       res.json(result);

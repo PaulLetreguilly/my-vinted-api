@@ -4,6 +4,7 @@ const encBase64 = require("crypto-js/enc-base64");
 const uid2 = require("uid2");
 const mongoose = require("mongoose");
 const router = express.Router();
+const cloudinary = require("cloudinary").v2;
 
 const User = require("../models/User");
 
@@ -38,7 +39,6 @@ router.post("/user/login", async (req, res) => {
 });
 
 router.post("/user/signup", async (req, res) => {
-  //   console.log(req.fields);
   try {
     const search = await User.findOne({ email: req.fields.email });
     if (search === null) {
@@ -56,7 +56,7 @@ router.post("/user/signup", async (req, res) => {
           account: {
             username: req.fields.username,
             phone: req.fields.phone,
-            avatar: { picture: image.secure_url },
+            avatar: image,
           },
           token: token,
           hash: hash,
