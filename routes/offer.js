@@ -143,7 +143,7 @@ router.get("/offers", async (req, res) => {
   }
 
   // let limit = Number(req.query.limit);
-  let limit = 2;
+  let limit = 10;
   if (req.query.limit) {
     limit = Number(req.query.limit);
   }
@@ -151,8 +151,8 @@ router.get("/offers", async (req, res) => {
   const offers = await Offer.find(filtre)
     .populate("owner.account")
     .sort(sort)
-    .skip((page - 1) * limit); // ignorer les x résultats
-  // .limit(limit); // renvoyer y résultats
+    .skip((page - 1) * limit) // ignorer les x résultats
+    .limit(limit); // renvoyer y résultats
 
   // cette ligne va nous retourner le nombre d'annonces trouvées en fonction des filtres
   const count = await Offer.countDocuments(filtre);
