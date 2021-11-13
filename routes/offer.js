@@ -127,10 +127,7 @@ router.get("/offers", async (req, res) => {
   // } else if (req.query.sort === "price-asc") {
   //   sort = { product_price: 1 };
   // }
-  let sort = "";
-  if (req.query.sort) {
-    sort = req.query.sort.replace("price-", "");
-  }
+  const sort = req.query.sort.replace("price-", "");
 
   let page = 1;
   // if (Number(req.query.page) < 1) {
@@ -143,7 +140,7 @@ router.get("/offers", async (req, res) => {
   }
 
   // let limit = Number(req.query.limit);
-  let limit = 10;
+  let limit = 20;
   if (req.query.limit) {
     limit = Number(req.query.limit);
   }
