@@ -62,63 +62,96 @@ router.get("/offers", async (req, res) => {
   if (req.query.title) {
     filtre.product_name = new RegExp(req.query.title, "i");
   }
-  if (req.query.page) {
-    const pageskip = (Number(req.query.page) - 1) * 2;
-    if (req.query.sort) {
-      const sort = req.query.sort.replace("price-", "");
-      const offer = await Offer.find(filtre)
-        .populate({
-          path: "owner",
-          select: "account",
-        })
-        // .select("product_name product_price")
-        .sort({ product_price: sort })
-        .limit(7)
-        .skip(pageskip);
-      const result = { count: offer.length, offers: offer };
-      res.json(result);
-    } else {
-      const offer = await Offer.find({
-        product_name: new RegExp(req.query.title, "i"),
-        product_price: { $lte: req.query.priceMax, $gte: req.query.priceMin },
-      })
-        .populate({
-          path: "owner",
-          select: "account",
-        })
-        // .select("product_name product_price")
-        .limit(2)
-        .skip(pageskip);
-      const result = { count: offer.length, offers: offer };
-      res.json(result);
-    }
-  } else {
-    if (req.query.sort) {
-      // console.log(req.query.priceMin);
-      const sort = req.query.sort.replace("price-", "");
-      const offer = await Offer.find(filtre)
-        .populate({
-          path: "owner",
-          select: "account",
-        })
-        // .select("product_name product_price")
-        .sort({ product_price: sort });
-      const result = { count: offer.length, offers: offer };
-      res.json(result);
-    } else {
-      // console.log(req.query.priceMin);
-      const offer = await Offer.find(filtre).populate({
-        path: "owner",
-        select: "account",
-      });
-      // .select(
-      //   "product_name product_price"
-      // );
+  // if (req.query.page) {
+  //   const pageskip = (Number(req.query.page) - 1) * 2;
+  //   if (req.query.sort) {
+  //     const sort = req.query.sort.replace("price-", "");
+  //     const offer = await Offer.find(filtre)
+  //       .populate({
+  //         path: "owner",
+  //         select: "account",
+  //       })
+  //       // .select("product_name product_price")
+  //       .sort({ product_price: sort })
+  //       .limit(7)
+  //       .skip(pageskip);
+  //     const result = { count: offer.length, offers: offer };
+  //     res.json(result);
+  //   } else {
+  //     const offer = await Offer.find({
+  //       product_name: new RegExp(req.query.title, "i"),
+  //       product_price: { $lte: req.query.priceMax, $gte: req.query.priceMin },
+  //     })
+  //       .populate({
+  //         path: "owner",
+  //         select: "account",
+  //       })
+  //       // .select("product_name product_price")
+  //       .limit(2)
+  //       .skip(pageskip);
+  //     const result = { count: offer.length, offers: offer };
+  //     res.json(result);
+  //   }
+  // } else {
+  //   if (req.query.sort) {
+  //     // console.log(req.query.priceMin);
+  //     const sort = req.query.sort.replace("price-", "");
+  //     const offer = await Offer.find(filtre)
+  //       .populate({
+  //         path: "owner",
+  //         select: "account",
+  //       })
+  //       // .select("product_name product_price")
+  //       .sort({ product_price: sort });
+  //     const result = { count: offer.length, offers: offer };
+  //     res.json(result);
+  //   } else {
+  //     // console.log(req.query.priceMin);
+  //     const offer = await Offer.find(filtre).populate({
+  //       path: "owner",
+  //       select: "account",
+  //     });
+  //     // .select(
+  //     //   "product_name product_price"
+  //     // );
 
-      const result = { count: offer.length, offers: offer };
-      res.json(result);
-    }
+  //     const result = { count: offer.length, offers: offer };
+  //     res.json(result);
+  //   }
+  // }
+  let sort = {};
+
+  if (req.query.sort === "price-desc") {
+    sort = { product_price: -1 };
+  } else if (req.query.sort === "price-asc") {
+    sort = { product_price: 1 };
   }
+
+  let page;
+  if (Number(req.query.page) < 1) {
+    page = 1;
+  } else {
+    page = Number(req.query.page);
+  }
+
+  let limit = Number(req.query.limit);
+
+  const offers = await Offer.find(filters)
+    .populate({
+      path: "owner",
+      select: "account",
+    })
+    .sort(sort)
+    .skip((page - 1) * limit) // ignorer les x résultats
+    .limit(limit); // renvoyer y résultats
+
+  // cette ligne va nous retourner le nombre d'annonces trouvées en fonction des filtres
+  const count = await Offer.countDocuments(filters);
+
+  res.json({
+    count: count,
+    offers: offers,
+  });
 });
 
 router.get("/offer/:id", async (req, res) => {
