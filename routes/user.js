@@ -52,7 +52,7 @@ router.post("/user/signup", async (req, res) => {
 router.post("/user/login", async (req, res) => {
   try {
     const search = await User.findOne({ email: req.fields.email }); //look for account with this email
-    if (search !== null) {
+    if (search) {
       // if this email isn't used yet
       // if (req.fields.email && req.fields.password && req.fields.username) {
       const password1 = req.fields.password;
@@ -62,7 +62,7 @@ router.post("/user/login", async (req, res) => {
       if (search.hash === hash1) {
         const infos = {
           id: search.id,
-          token: token1,
+          token: search.token,
           account: {
             username: search.account.username,
             phone: search.account.phone,
