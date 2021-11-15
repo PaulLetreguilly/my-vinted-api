@@ -70,11 +70,11 @@ router.post("/user/login", async (req, res) => {
         };
         res.status(200).json(infos);
       } else {
-        res.status(400).json({ message: "wrong password" });
+        res.status(400).json({ message: "unauthorized 2" });
       }
       // }
     } else {
-      res.status(400).json({ message: "wrong email" });
+      res.status(400).json({ message: "unauthorized 1" });
     }
   } catch (error) {
     res.status(400).json({ message: error.message });

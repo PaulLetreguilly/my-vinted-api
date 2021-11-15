@@ -206,8 +206,8 @@ router.get("/offers", async (req, res) => {
     } else {
       limit = 20;
     }
-    console.log(Number(page));
-    console.log(limit);
+    // console.log(Number(page));
+    // console.log(limit);
 
     const offers = await Offer.find(filters)
       .populate("owner.account")
