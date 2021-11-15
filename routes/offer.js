@@ -192,20 +192,25 @@ router.get("/offers", async (req, res) => {
       sort = { product_price: 1 };
     }
 
-    let page;
-    if (Number(req.query.page) < 1) {
+    let page = 1;
+    if (Number(req.query.page) < 1 || !req.query.page) {
       page = 1;
     } else {
       page = Number(req.query.page);
     }
 
-    let limit = Number(req.query.limit);
+    // let limit = 20;
+    let limit;
+    if (req.query.limit && typeof req.query.limit === "number") {
+      limit = Number(req.query.limit);
+    } else {
+      limit = 20;
+    }
+    console.log(Number(page));
+    console.log(limit);
 
     const offers = await Offer.find(filters)
-      .populate({
-        path: "owner",
-        select: "account",
-      })
+      .populate("owner.account")
       .sort(sort)
       .skip((page - 1) * limit) // ignorer les x résultats
       .limit(limit); // renvoyer y résultats
