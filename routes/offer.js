@@ -124,4 +124,16 @@ router.get("/offer/:id", async (req, res) => {
   }
 });
 
+router.delete("/offer/delete/:id", async (req, res) => {
+  try {
+    offerToDelete = await Offer.findById(req.params.id);
+
+    await offerToDelete.delete();
+
+    res.status(400).json("offer deleted");
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
 module.exports = router;

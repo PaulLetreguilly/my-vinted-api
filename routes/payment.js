@@ -1,4 +1,5 @@
 const express = require("express");
+const Offer = require("../models/Offer");
 const router = express.Router();
 const stripe = require("stripe")(process.env.STRIPE_API_SECRET_KEY);
 
@@ -7,7 +8,7 @@ router.post("/payment", async (req, res) => {
     const response = await stripe.charges.create({
       amount: req.fields.amount * 100,
       currency: "eur",
-      description: `Paiement my Vinted : On progress..`,
+      description: `Paiement my Vinted pour : ${req.fields.name}`,
       source: req.fields.token,
     });
 
