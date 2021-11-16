@@ -5,15 +5,9 @@ const mongoose = require("mongoose");
 const cloudinary = require("cloudinary").v2;
 const cors = require("cors");
 
-const corsOptions = {
-  origin: `http://localhost:${process.env.PORT}`,
-  credentials: true, //access-control-allow-credentials:true
-  optionSuccessStatus: 200,
-};
-
 const app = express();
 app.use(formidable());
-app.use(cors(corsOptions));
+app.use(cors());
 mongoose.connect(process.env.MONGO_DB_URI);
 
 cloudinary.config({

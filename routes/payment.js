@@ -1,11 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const formidableMiddleware = require("express-formidable");
 const stripe = require("stripe")(process.env.STRIPE_API_SECRET_KEY);
-const cors = require("cors");
-
-router.use(formidableMiddleware());
-router.use(cors());
 
 router.post("/payment", async (req, res) => {
   try {
